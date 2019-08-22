@@ -19,7 +19,7 @@ for mod1 in ${SWEEP_BUFFERS[@]}; do
         printf "$mod1\t$mod2\t$pkt\t"
         #printf "$mod1\t$pkt\t"
         >&2 echo "LOG STAT::$mod1\t$mod2\t$pkt\t"
-        make clean && make rxer PROFILE=optimized EXTRA="-DMOD_BUFFER_SIZE_2=${mod2} -DMOD_BUFFER_SIZE_1=${mod1}" && sudo ./rxer -l 1-3 -n4 | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+        make clean && make rxer PROFILE=optimized EXTRA="-DMOD_BUFFER_SIZE_2=${mod2} -DMOD_BUFFER_SIZE_1=${mod1}" && sudo ./bin/rxer -l 1-3 -n4 | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
     done
 done | tee "${OUTDIR}/$pkt.tsv" 2>${OUTDIR}/$pkt.log
 
