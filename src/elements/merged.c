@@ -135,10 +135,10 @@ void merged_release(struct element_t *ele) {
     struct merged_t *self = (struct merged_t *)ele;
 
     uint64_t total = 0;
-    for (int i = 0 ; i < self->tbl_size; ++i) {
+    for (size_t i = 0 ; i < self->tbl_size; ++i) {
         total += self->tbl[i];
     }
-    printf("Total number of packets processed: %llu\n", total);
+    printf("Total number of packets processed: %lu\n", total);
 
     if (self->tbl) {
         mem_release(self->tbl);

@@ -29,7 +29,7 @@ struct naive_measurement_t *naive_measurement_create(void) {
     return measurement;
 }
 
-void naive_measurement_process(struct element_t *ele, struct packet_t **pkts, packet_index_t size) {
+void naive_measurement_process(struct element_t *ele, struct packet_t **pkts, __attribute__((unused))packet_index_t size) {
     struct naive_measurement_t *self = (struct naive_measurement_t *)ele;
     struct __attribute__((packed)) {
         ipv4_t src;
@@ -69,11 +69,11 @@ void naive_measurement_release(struct element_t *ele) {
         size_t size_minus_one = self->tbl_size - 1;
         size_t total_unique = 0;
         size_t total_count = 0;
-        for (int i = 0; i < size_minus_one; ++i) {
+        for (size_t i = 0; i < size_minus_one; ++i) {
             total_count += self->tbl[i];
             total_unique += (self->tbl[i] != 0);
         }
-        printf("Total unique: %d, total count: %d\n", total_unique, total_count);
+        printf("Total unique: %ld, total count: %ld\n", total_unique, total_count);
         mem_release(self->tbl);
     }
     mem_release(self);

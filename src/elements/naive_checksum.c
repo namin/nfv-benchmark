@@ -20,7 +20,7 @@ struct naive_checksum_t *naive_checksum_create(void) {
     return checksum;
 }
 
-void naive_checksum_process(struct element_t *ele, struct packet_t **pkts, packet_index_t size) {
+void naive_checksum_process(struct element_t *ele, struct packet_t **pkts, __attribute__((unused))packet_index_t size) {
     struct naive_checksum_t *self = ((struct naive_checksum_t*)ele);
 
     struct packet_t *pkt = pkts[0];

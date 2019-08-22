@@ -41,7 +41,6 @@ void batching_measurement_process(struct element_t *ele, struct packet_t **pkts,
     uint32_t out;
     size_t size_minus_one = self->tbl_size - 1;
 
-    struct packet_t *pkt = 0;
     // XXX: Processing multiple packets at the same time speeds up packet
     // processing greatly.  The reasoning is: First, we can amortize the cost
     // of function calls: e.g., instead of calling a function multiple times,
@@ -73,11 +72,11 @@ void batching_measurement_release(struct element_t *ele) {
         size_t size_minus_one = self->tbl_size - 1;
         size_t total_unique = 0;
         size_t total_count = 0;
-        for (int i = 0; i < size_minus_one; ++i) {
+        for (size_t i = 0; i < size_minus_one; ++i) {
             total_count += self->tbl[i];
             total_unique += (self->tbl[i] != 0);
         }
-        printf("Total unique: %d, total count: %d\n", total_unique, total_count);
+        printf("Total unique: %ld, total count: %ld\n", total_unique, total_count);
         mem_release(self->tbl);
     }
     mem_release(self);

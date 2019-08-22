@@ -31,6 +31,7 @@ static int console_status = CONSOLE_STOP;
 int  rxer(void *);
 int  datapath_init(int argc, char **, struct dataplane_port_t **);
 void datapath_teardown(struct dataplane_port_t *);
+struct pipeline_t *pipeline_build(struct rx_packet_stream *stream);
 
 struct pipeline_t *pipeline_build(struct rx_packet_stream *stream) {
     struct pipeline_t *pipe = pipeline_create();
@@ -155,11 +156,11 @@ int main(int argc, char **argv) {
     argv += ret;
 
     if (!port) 
-        return 0;
+		return 0;
 
 	port->core_id = 3;
 
-    rte_eal_mp_remote_launch(rxer, (void *)port, CALL_MASTER);
+	rte_eal_mp_remote_launch(rxer, (void *)port, CALL_MASTER);
 	unsigned lcore_id = 0;
 	unsigned finished = 0;
 

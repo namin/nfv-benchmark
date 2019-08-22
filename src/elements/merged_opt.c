@@ -77,7 +77,6 @@ void merged_opt_process(struct element_t *ele, struct packet_t **pkts, packet_in
             rte_prefetch0(p[j + MPO_SIZE_HALF]->hdr + 26);
         }
 
-        uint32_t *tbl = self->tbl;
         for (int j = 0; j < MPO_SIZE_HALF; ++j) {
             pkt = p[j];
             ip.src = *((ipv4_t*)(pkt->hdr+ 14 + 12));
@@ -136,10 +135,10 @@ void merged_opt_release(struct element_t *ele) {
     struct merged_opt_t *self = (struct merged_opt_t *)ele;
 
     uint64_t total = 0;
-    for (int i = 0 ; i < self->tbl_size; ++i) {
+    for (size_t i = 0 ; i < self->tbl_size; ++i) {
         total += self->tbl[i];
     }
-    printf("Total number of packets processed: %llu\n", total);
+    printf("Total number of packets processed: %lu\n", total);
 
     if (self->tbl) {
         mem_release(self->tbl);

@@ -4,7 +4,9 @@ CC = gcc
 PROFILE=optimized
 PROFILE=debug
 
-DPDK_ROOT=/home/omid/nfv/dpdk/dpdk-18.02/x86_64-native-linuxapp-gcc
+# Installation instructions for DPDK on Linux can be found here
+# DPDK docs: https://dpdk.readthedocs.io/en/v2.2.0/linux_gsg/intro.html
+DPDK_ROOT=/home/gardei/Git/nfv-benchmark/dpdk-18.02/x86_64-native-linuxapp-gcc
 
 # TODO: Swap these with w/e flag DPDK spits out - should be a combination of mk/rte.vars.mk and ...
 DPDK_CFLAGS=-m64 -pthread  -march=native -DRTE_MACHINE_CPUFLAG_SSE -DRTE_MACHINE_CPUFLAG_SSE2 -DRTE_MACHINE_CPUFLAG_SSE3 -DRTE_MACHINE_CPUFLAG_SSSE3 -DRTE_MACHINE_CPUFLAG_SSE4_1 -DRTE_MACHINE_CPUFLAG_SSE4_2 -DRTE_MACHINE_CPUFLAG_AES -DRTE_MACHINE_CPUFLAG_PCLMULQDQ -DRTE_MACHINE_CPUFLAG_AVX -DRTE_MACHINE_CPUFLAG_RDRAND -DRTE_MACHINE_CPUFLAG_FSGSBASE -DRTE_MACHINE_CPUFLAG_F16C -DRTE_MACHINE_CPUFLAG_AVX2  -I$(DPDK_ROOT)/include -include $(DPDK_ROOT)/include/rte_config.h -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wold-style-definition -Wpointer-arith -Wcast-align -Wnested-externs -Wcast-qual -Wno-format-nonliteral -Wno-format-security -Wundef -Wwrite-strings -Wdeprecated
@@ -14,8 +16,10 @@ DPDK_LDFLAGS=-L$(DPDK_ROOT)/lib -Wl,-lrte_flow_classify -Wl,-lrte_pipeline -Wl,-
 
 FLTO=
 
+IGNORE_WARNINGS_FLAGS=-Wno-implicit-fallthrough -Wno-incompatible-pointer-types -Wno-deprecated-declarations
+
 # CFLAGS generation
-CFLAGS_BASE = -I include/ -I lib/ -Itest-rxer/ -lm $(DPDK_CFLAGS) -fdiagnostics-color -march=native $(FLTO)
+CFLAGS_BASE = -I include/ -I lib/ -Itest-rxer/ -lm $(DPDK_CFLAGS) -fdiagnostics-color -march=native $(FLTO) $(IGNORE_WARNINGS_FLAGS)
 CFLAGS_OPT = $(CFLAGS_BASE) -O3 -ffunction-sections -fdata-sections -fPIC -ggdb -fno-omit-frame-pointer -funroll-loops --param max-unroll-times=256
 CFLAGS_DEBUG = $(CFLAGS_BASE) -O0 -pg -ggdb -fPIC
 
@@ -90,7 +94,12 @@ else
 endif
 
 .PHONY: all
-all: main
+all: tags main
+
+.PHONY: tags
+tags:
+	rm tags
+	ctags -R *
 
 .PHONY: clean
 clean:

@@ -59,10 +59,10 @@ struct element_t *el_only_merged_create(char const *fname, size_t __attribute__(
 struct element_t *el_only_fastpass_create(struct rx_packet_stream* stream) {
     struct element_t *el = (struct element_t*)fastpass_create(
         1933683066, 1769104744, 265260270);
-    struct drop_mbuf_t *drop = el_only_drop_mbuf_create(stream);
+    struct element_t *drop = el_only_drop_mbuf_create(stream);
 
     // attach a drop_mbuf to port/1
-    el->connect(el, 1, (element_t *)drop);
+    el->connect(el, 1, drop);
 
     return el;
 }

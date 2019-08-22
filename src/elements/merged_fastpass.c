@@ -86,7 +86,7 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
             rte_prefetch0(p[j + MPF_SIZE_HALF]->hdr + 26);
         }
 
-        uint32_t fidx = 0; uint32_t sidx = 0;
+        uint32_t sidx = 0;
         for (int j = 0; j < MPF_SIZE_HALF; ++j) {
             pkt = p[j];
             ip.src = *((ipv4_t*)(pkt->hdr+ 14 + 12));
@@ -121,7 +121,7 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
             self->checksum_count += checksum(pkt->hdr, pkt->size);
         }
 
-        for (int j = 0; j < sidx; ++j) {
+        for (uint32_t j = 0; j < sidx; ++j) {
             pkt = slow[j];
             ip.src = *((ipv4_t*)(pkt->hdr+ 14 + 12));
             ip.dst = *((ipv4_t*)(pkt->hdr+ 14 + 12 + 4));
@@ -139,7 +139,7 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
             }
         }
 
-        for (int j = 0; j < sidx; ++j) {
+        for (uint32_t j = 0; j < sidx; ++j) {
             self->tbl[hashes[j]]++;
         }
 
@@ -151,7 +151,7 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
     }
 
     i -= MPF_SIZE_HALF;
-    uint32_t fidx = 0; uint32_t sidx = 0;
+    uint32_t sidx = 0;
     for (int j = i; j < size; ++j) {
         pkt = pkts[j];
         ip.src = *((ipv4_t*)(pkt->hdr+ 14 + 12));
@@ -181,11 +181,10 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
                                 */
         sidx -= (is_fast);
         fastpass_count += is_fast;
-        register uint32_t out = 0;
         self->checksum_count += checksum(pkt->hdr, pkt->size);
     }
 
-    for (int j = 0; j < sidx; ++j) {
+    for (uint32_t j = 0; j < sidx; ++j) {
         pkt = slow[j];
         ip.src = *((ipv4_t*)(pkt->hdr+ 14 + 12));
         ip.dst = *((ipv4_t*)(pkt->hdr+ 14 + 12 + 4));
@@ -203,7 +202,7 @@ void merged_fastpass_process(struct element_t *ele, struct packet_t **pkts, pack
         }
     }
 
-    for (int j = 0; j < sidx; ++j) {
+    for (uint32_t j = 0; j < sidx; ++j) {
         self->tbl[hashes[j]]++;
     }
     self->slowpass_count += sidx;
@@ -216,12 +215,12 @@ void merged_fastpass_release(struct element_t *ele) {
     struct merged_fastpass_t *self = (struct merged_fastpass_t *)ele;
 
     uint64_t total = 0;
-    for (int i = 0 ; i < self->tbl_size; ++i) {
+    for (size_t i = 0 ; i < self->tbl_size; ++i) {
         total += self->tbl[i];
     }
-    printf("Total number of packets processed: %llu\n", total);
-    printf("Total number of fastpass packets: %llu\n", self->_tmp_2);
-    printf("Total number of slowpass packets: %llu\n", self->slowpass_count);
+    printf("Total number of packets processed: %lu\n", total);
+    printf("Total number of fastpass packets: %lu\n", self->_tmp_2);
+    printf("Total number of slowpass packets: %lu\n", self->slowpass_count);
 
     if (self->tbl) {
         mem_release(self->tbl);

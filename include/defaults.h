@@ -47,11 +47,11 @@
 
 
 #ifndef MOD_BUFFER_SIZE_1
-//#define MOD_BUFFER_SIZE_1 32
+#define MOD_BUFFER_SIZE_1 32
 #endif
 
 #ifndef MOD_BUFFER_SIZE_2
-//#define MOD_BUFFER_SIZE_2 32
+#define MOD_BUFFER_SIZE_2 32
 #endif
 
 #ifndef MOD_BUFFER_SIZE_3

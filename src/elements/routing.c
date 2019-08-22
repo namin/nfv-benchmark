@@ -83,7 +83,8 @@ int routing_file_load(struct routing_t *rt, char const *fname) {
     FILE *f = fopen(fname, "r");
     if (!f) { return 0; }
 
-    size_t read = 0, len = 0;
+    ssize_t read = 0;
+	size_t len = 0;
     ipv4_prefix_t buf;
     port_index_t outport;
 

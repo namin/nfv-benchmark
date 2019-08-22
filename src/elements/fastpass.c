@@ -63,9 +63,9 @@ void fastpass_process(struct element_t *ele, struct packet_t **pkts, packet_inde
             struct packet_t *pkt = p[j];
             char const *hdr = pkt->hdr;
             self->fast[fast++] = self->slow[slow++] = pkt;
-            uint32_t is_fast = (*((uint32_t*)(hdr + 14 + 16)) ^ b) |
-                               (*((uint32_t*)(hdr + 14 + 12)) ^ a) |
-                               (*((uint32_t*)(hdr + 14 + 20)) ^ c);
+            uint32_t is_fast = (*((const uint32_t*)(hdr + 14 + 16)) ^ b) |
+                               (*((const uint32_t*)(hdr + 14 + 12)) ^ a) |
+                               (*((const uint32_t*)(hdr + 14 + 20)) ^ c);
 
             is_fast = (is_fast == 0);
             self->count += is_fast;
@@ -86,9 +86,9 @@ void fastpass_process(struct element_t *ele, struct packet_t **pkts, packet_inde
         struct packet_t *pkt = pkts[j];
         char const *hdr = pkt->hdr;
         self->fast[fast++] = self->slow[slow++] = pkt;
-        uint32_t is_fast = (*((uint32_t*)(hdr + 14 + 16)) ^ b) |
-                           (*((uint32_t*)(hdr + 14 + 12)) ^ a) |
-                           (*((uint32_t*)(hdr + 14 + 20)) ^ c);
+        uint32_t is_fast = (*((const uint32_t*)(hdr + 14 + 16)) ^ b) |
+                           (*((const uint32_t*)(hdr + 14 + 12)) ^ a) |
+                           (*((const uint32_t*)(hdr + 14 + 20)) ^ c);
 
         is_fast = (is_fast == 0);
         self->count += is_fast;

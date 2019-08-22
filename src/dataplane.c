@@ -170,7 +170,7 @@ void dataplane_read_stats(struct dataplane_port_t *port) {
     struct rte_eth_stats *port_stats = &port->port_stats_now;
 
     if (rte_eth_stats_get(port->port_id, port_stats))
-        rte_exit(EXIT_FAILURE, "Failed to read dataplane stats.");
+		rte_exit(EXIT_FAILURE, "Failed to read dataplane stats.");
 
 	uint64_t curtime = rte_rdtsc();
 	port->port_stats_time_delta = curtime - port->port_stats_time;

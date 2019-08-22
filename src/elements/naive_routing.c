@@ -26,7 +26,7 @@ struct naive_routing_t *naive_routing_create(void) {
     return ret;
 }
 
-void naive_routing_process(struct element_t *el, struct packet_t **pkts, packet_index_t count) {
+void naive_routing_process(struct element_t *el, struct packet_t **pkts, __attribute__((unused)) packet_index_t count) {
     struct naive_routing_t *self = (struct naive_routing_t *)el;
     uint32_t port_count = 0;
     struct packet_t *pkt = pkts[0];

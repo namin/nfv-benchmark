@@ -204,11 +204,11 @@ void measurement_release(struct element_t *ele) {
         size_t size_minus_one = self->tbl_size - 1;
         size_t total_unique = 0;
         size_t total_count = 0;
-        for (int i = 0; i < size_minus_one; ++i) {
+        for (size_t i = 0; i < size_minus_one; ++i) {
             total_count += self->tbl[i];
             total_unique += (self->tbl[i] != 0);
         }
-        printf("Total unique: %d, total count: %d\n", total_unique, total_count);
+        printf("Total unique: %ld, total count: %ld\n", total_unique, total_count);
         mem_release(self->tbl);
     }
     mem_release(self);
