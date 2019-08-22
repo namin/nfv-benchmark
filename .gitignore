@@ -2,6 +2,7 @@
 # Custom
 #----------------------------------------
 dpdk-18.02
+bin
 main
 txer
 tests/**/*tsv
