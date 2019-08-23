@@ -5,6 +5,7 @@ dpdk-18.02
 bin
 main
 txer
+output
 tests/**/*tsv
 tests/**/*png
 tests/**/*pdf

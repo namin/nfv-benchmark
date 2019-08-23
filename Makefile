@@ -99,14 +99,14 @@ all: tags main
 
 .PHONY: tags
 tags:
-	rm tags
+	rm -f tags
 	ctags -R *
 
 .PHONY: clean
 clean:
 	@find . -iname "*.o" -delete
 	@rm -f main txer rxer jit.so rxer.log
-	@rm -rf output build
+# @rm -rf output build
 
 $(ALLOBJ): $(BUILD_DIR)/%.o: %.c
 	@>&2 echo Compiling $<
