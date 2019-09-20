@@ -1,6 +1,6 @@
 #include "memory.h"
 
-#define __DPDK
+//#define __DPDK
 
 #ifdef __DPDK
 #include <rte_malloc.h>

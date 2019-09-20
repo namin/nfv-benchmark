@@ -24,7 +24,7 @@ void datapath_teardown(struct dataplane_port_t *port);
 
 void test_benchmark(char const *);
 void test_benchmark(char const *name) {
-    uint32_t packet_count = 1<<24;
+    uint32_t packet_count = 1<<10;
     struct packet_pool_t *pool = packets_pool_create(packet_count, PACKET_SIZE);
 
     // Create a zipfian distribution for source/destination ip address
@@ -54,8 +54,9 @@ int datapath_init(int argc, char **argv, struct dataplane_port_t **port) {
     if (ret < 0)
         rte_exit(EXIT_FAILURE, "Failed to initialize the EAL.");
 
-    const char port_name[] = "0000:06:00.3";
-	// rte_eth_dev_count(): dpdk-18.02/lib/librte_ether/rte_ethdev.h
+    //const char port_name[] = "0000:06:00.3";
+    // rte_eth_dev_count(): dpdk-18.02/lib/librte_ether/rte_ethdev.h
+    const char port_name[] = "0000:04:00.1";
     log_info_fmt("Num available dpdk ports (i.e., number of usable ethernet devices): %d", rte_eth_dev_count());
 
     struct dataplane_port_t *pport = 0;
@@ -76,6 +77,10 @@ int main(int argc, char **argv) {
     // Deterministic experiments are the best experiments - one can only hope.
     srand(0);
 
+    char* bench_name = "checksum-drop";
+    if (argc > 1) {
+      bench_name = argv[1];
+    }
     struct dataplane_port_t *port = 0;
     int ret = datapath_init(argc, argv, &port);
     argc -= ret;
@@ -84,7 +89,7 @@ int main(int argc, char **argv) {
     if (!port) 
         return 0;
 
-    sleep(10);
+    test_benchmark(bench_name);
 
     datapath_teardown(port);
     return 0;

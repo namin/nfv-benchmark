@@ -119,8 +119,11 @@ main: $(MAIN_OBJ)
 	@mkdir -p $(BIN_DIR)
 	@$(CC) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) -ldl
 
-.PHONY: jit-test
 jit: $(JIT_OBJ)
+	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA)
+
+.PHONY: jit-test
+jit-test: $(JIT_OBJ)
 	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA)
 
 .PHONY: txer
