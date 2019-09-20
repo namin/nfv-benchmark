@@ -20,7 +20,8 @@ for pkt in ${PACKET_SIZE[@]}; do
     for mod1 in ${SWEEP_BUFFERS[@]}; do
         for mod2 in ${SWEEP_BUFFERS[@]}; do
             printf "$mod1\t$mod2\t$pkt\t"
-            make profile-run BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DMOD_BUFFER_SIZE_2=${mod2} -DMOD_BUFFER_SIZE_1=${mod1}" | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+            make clean && make jit-test BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DMOD_BUFFER_SIZE_2=${mod2} -DMOD_BUFFER_SIZE_1=${mod1}" | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+	    printf "\n"
         done
     done | tee "${OUTDIR}/$pkt.tsv"
 done
