@@ -16,7 +16,7 @@ for pkt in ${PACKET_SIZE[@]}; do
     for chksum in ${SWEEP_BUFFERS[@]}; do
         for routing in ${SWEEP_BUFFERS[@]}; do
             printf "$chksum\t$routing\t$pkt\t"
-            make profile-run BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=100 -DPACKET_SIZE=${pkt} -DROUTING_BUFFER_SIZE=${routing} -DCHECKSUM_BUFFER_SIZE=${chksum}" | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+            make jit-test BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=100 -DPACKET_SIZE=${pkt} -DROUTING_BUFFER_SIZE=${routing} -DCHECKSUM_BUFFER_SIZE=${chksum}" && make && sudo ./bin/main | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
         done
     done | tee "${OUTDIR}/$pkt.tsv"
 done

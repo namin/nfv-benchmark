@@ -17,7 +17,7 @@ for pkt in ${PACKET_SIZE[@]}; do
     for chksum in ${SWEEP_BUFFERS[@]}; do
         for chksumm in ${SWEEP_BUFFERS[@]}; do
             printf "$chksum\t$chksumm\t$pkt\t"
-            make jit BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DCHECKSUM_BUFFER_SIZE_2=${chksumm} -DCHECKSUM_BUFFER_SIZE_1=${chksum}" && make && sudo ./bin/main | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+            make jit-test BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DCHECKSUM_BUFFER_SIZE_2=${chksumm} -DCHECKSUM_BUFFER_SIZE_1=${chksum}" && make && sudo ./bin/main | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
         done
     done | tee "${OUTDIR}/$pkt.tsv"
 done
