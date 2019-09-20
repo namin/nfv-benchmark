@@ -77,10 +77,6 @@ int main(int argc, char **argv) {
     // Deterministic experiments are the best experiments - one can only hope.
     srand(0);
 
-    char* bench_name = "checksum-drop";
-    if (argc > 1) {
-      bench_name = argv[1];
-    }
     struct dataplane_port_t *port = 0;
     int ret = datapath_init(argc, argv, &port);
     argc -= ret;
@@ -89,7 +85,7 @@ int main(int argc, char **argv) {
     if (!port) 
         return 0;
 
-    test_benchmark(bench_name);
+    test_benchmark(0);
 
     datapath_teardown(port);
     return 0;
