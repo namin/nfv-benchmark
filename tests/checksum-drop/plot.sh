@@ -16,6 +16,6 @@ for i in $files; do
 done
 
 gnuplot -e "files='$files'" -e "mod1='$MOD1'" -e "mod2='$MOD2'" ../plots/heatmap-layout.gp;
-rsync -r graphs/ friend@omid.io:/www/io-omid/graphs/nfv/$PIPELINE --delete 
+#rsync -r graphs/ friend@omid.io:/www/io-omid/graphs/nfv/$PIPELINE --delete 
 
-echo "View files at: https://omid.io/graphs/nfv/$PIPELINE/"
+#echo "View files at: https://omid.io/graphs/nfv/$PIPELINE/"
