@@ -1,6 +1,6 @@
 #include "memory.h"
 
-//#define __DPDK
+#define __DPDK
 
 #ifdef __DPDK
 #include <rte_malloc.h>
@@ -35,7 +35,7 @@ void *mem_alloc_align(size_t align, size_t size) {
 
     memset(addr, 0, size);
 #else
-    addr = rte_malloc_socket(0, size, align, 1);
+    addr = rte_zmalloc_socket(0, size, align, 1);
 #endif
     return addr;
 }
