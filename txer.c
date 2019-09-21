@@ -46,7 +46,7 @@ int txer(void *arg) {
     uint16_t port_id = port->port_id;
     uint16_t queue_id = 0;
 
-    uint32_t packet_count = 1<<24;
+    uint32_t packet_count = 1<<10;
 
     log_info("Preparing packet pool.");
     struct packet_pool_t *pool = packets_pool_create(packet_count, PACKET_SIZE);
@@ -144,7 +144,8 @@ int datapath_init(int argc, char **argv, struct dataplane_port_t **port) {
     if (ret < 0)
         rte_exit(EXIT_FAILURE, "Failed to initialize the EAL.");
 
-    const char port_name[] = "0000:89:00.2";
+    //const char port_name[] = "0000:89:00.2";
+    const char port_name[] = "0000:04:00.1";
     log_info_fmt("Num available dpdk ports: %d", rte_eth_dev_count());
 
     struct dataplane_port_t *pport = 0;
