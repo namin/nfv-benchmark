@@ -10,14 +10,14 @@ OUTDIR=${CWD}/output
 mkdir -p ${OUTDIR}
 
 cd ${CWD}/../../
-rm main
 
 for pkt in ${PACKET_SIZE[@]}; do
     printf "CHECKSUM\tCHECKSUM 2\tPACKET_SIZE\tCYCLES\n"
     for chksum in ${SWEEP_BUFFERS[@]}; do
         for chksumm in ${SWEEP_BUFFERS[@]}; do
             printf "$chksum\t$chksumm\t$pkt\t"
-            make jit-test BENCHMARK=${BENCHMARK} EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DCHECKSUM_BUFFER_SIZE_2=${chksumm} -DCHECKSUM_BUFFER_SIZE_1=${chksum}" && make && sudo ./bin/main | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
+            EXTRA="-DREPEAT=200 -DPACKET_SIZE=${pkt} -DCHECKSUM_BUFFER_SIZE_2=${chksumm} -DCHECKSUM_BUFFER_SIZE_1=${chksum}"
+            make clean && make jit-test PROFILE=optimized BENCHMARK=${BENCHMARK} EXTRA="$EXTRA" && make main EXTRA="$EXTRA" && sudo ./bin/main | grep cycles | rev | cut -d' ' -f1 | sed -e 's/[()]//g' | rev
         done
     done | tee "${OUTDIR}/$pkt.tsv"
 done
