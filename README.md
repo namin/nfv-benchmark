@@ -5,12 +5,12 @@ Adopted to continue project on NFV
 ## Instructions:
 - Setup DPDK in sibling directory ([zip](https://github.com/DPDK/dpdk/archive/v18.02.zip), ([docs](https://dpdk.readthedocs.io/en/v2.2.0/linux_gsg/intro.html)))
   * edit config/common_base
-  CONFIG_RTE_BUILD_SHARED_LIB=y
-  CONFIG_RTE_EAL_PMD_PATH="./build/pmdlib" (use the absolute path of DPDK project instead of .)
-  (for MLX4 support)
-  CONFIG_RTE_LIBRTE_MLX4_PMD=y
-  CONFIG_RTE_LIBRTE_MLX4_DEBUG=y
-  CONFIG_RTE_LIBRTE_MLX4_DLOPEN_DEPS=y
+    + CONFIG_RTE_BUILD_SHARED_LIB=y
+    + CONFIG_RTE_EAL_PMD_PATH="./build/pmdlib" (use the absolute path of DPDK project instead of .)
+    + (for MLX4 support)
+    + CONFIG_RTE_LIBRTE_MLX4_PMD=y
+    + CONFIG_RTE_LIBRTE_MLX4_DEBUG=y
+    + CONFIG_RTE_LIBRTE_MLX4_DLOPEN_DEPS=y
   * `make config T=x86_64-native-linuxapp-gcc`
   * `make`
   * in build, copy the drivers from lib to pmdlib, not all should be copied. see pmlib.txt for a list that works.
