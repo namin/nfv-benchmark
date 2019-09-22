@@ -126,7 +126,7 @@ jit: $(JIT_OBJ)
 
 .PHONY: jit-test
 jit-test: $(JIT_OBJ)
-	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA)
+	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) -ldl
 
 .PHONY: txer
 txer: $(TXER_OBJ)
