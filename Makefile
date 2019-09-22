@@ -69,6 +69,9 @@ RXER_TEST_SRC += test-rxer/benchmark.c
 MAIN_SRC = $(SRC)
 MAIN_SRC += main.c
 
+MY_SRC = $(SRC)
+MY_SRC += my.c
+
 ifeq ($(MAKECMDGOALS), jit-test)
 	JIT_SRC += tests/$(BENCHMARK)/benchmark.c
 endif
@@ -76,6 +79,7 @@ endif
 
 # Object file rules
 MAIN_OBJ = $(MAIN_SRC:%.c=$(BUILD_DIR)/%.o)
+MY_OBJ = $(MY_SRC:%.c=$(BUILD_DIR)/%.o)
 JIT_OBJ  = $(JIT_SRC:%.c=$(BUILD_DIR)/%.o)
 TXER_OBJ = $(TXER_SRC:%.c=$(BUILD_DIR)/%.o)
 RXER_OBJ = $(RXER_SRC:%.c=$(BUILD_DIR)/%.o)
@@ -128,12 +132,18 @@ main: $(MAIN_OBJ)
 	@mkdir -p $(BIN_DIR)
 	@$(CC) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) $(MLX4_LDL) -ldl
 
+.PHONY: jit
 jit: $(JIT_OBJ)
 	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA)
 
 .PHONY: jit-test
 jit-test: $(JIT_OBJ)
 	@$(CC) -shared -o $@.so $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) $(MLX4_LDL) -ldl
+
+.PHONY: my
+my: $(MY_OBJ)
+	@mkdir -p $(BIN_DIR)
+	@$(CC) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) -ldl
 
 .PHONY: txer
 txer: $(TXER_OBJ)

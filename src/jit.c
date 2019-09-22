@@ -14,12 +14,13 @@ void jit_test_load(struct jit_t *jit, char const *name) {
     if (name != 0) {
       // make the file
       log_info("Compiling the shared library.");
-      sprintf(buffer, "make jit-test BENCHMARK=%s PROFILE=optimized 2>./logs/jit.gcc.err 1>./logs/jit.gcc.out", name);
+      sprintf(buffer, "echo '%s'; make jit-test BENCHMARK=%s PROFILE=optimized 2>./logs/jit.gcc.err 1>./logs/jit.gcc.out; mv jit-test.so jit-test-%s.so", name, name, name);
       if (system(buffer) != 0) {
         return;
       }
     }
-    jit->handle = dlopen("./jit-test.so", RTLD_LAZY);
+    sprintf(buffer, "./jit-test-%s.so", name);
+    jit->handle = dlopen(buffer, RTLD_LAZY);
 
     if (jit->handle == 0) {
         log_err(dlerror());
