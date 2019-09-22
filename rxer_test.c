@@ -187,9 +187,7 @@ int datapath_init(int argc, char **argv, struct dataplane_port_t **port) {
     if (ret < 0)
         rte_exit(EXIT_FAILURE, "Failed to initialize the EAL.");
 
-    //const char port_name[] = "0000:89:00.2";
-    const char port_name[] = "mlx4_6";
-    //const char port_name[] = "0000:04:00.1";
+    const char port_name[] = PORT_NAME;
     log_info_fmt("Num available dpdk ports: %d", rte_eth_dev_count());
 
     struct dataplane_port_t *pport = 0;

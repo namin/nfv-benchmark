@@ -7,6 +7,10 @@ Adopted to continue project on NFV
   * edit config/common_base
   CONFIG_RTE_BUILD_SHARED_LIB=y
   CONFIG_RTE_EAL_PMD_PATH="./build/pmdlib" (use the absolute path of DPDK project instead of .)
+  (for MLX4 support)
+  CONFIG_RTE_LIBRTE_MLX4_PMD=y
+  CONFIG_RTE_LIBRTE_MLX4_DEBUG=y
+  CONFIG_RTE_LIBRTE_MLX4_DLOPEN_DEPS=y
   * `make config T=x86_64-native-linuxapp-gcc`
   * `make`
   * in build, copy the drivers from lib to pmdlib, not all should be copied. see pmlib.txt for a list that works.
@@ -25,7 +29,9 @@ Hugepagesize:       2048 kB
   * `sudo umount -a -t hugetlbfs`
   * `sudo mount -t hugetlbfs nodev /mnt/huge`
   * can also do `sudo rm -rf /mnt/huge/*` to free once mounted
-- `./benchmark.sh`
+- Edit Makefile:
+  * Pick whether you need MLX4 support
+  * Pick PORT_NAME
 
 ## Next steps:
 - [x] Build and run anything
