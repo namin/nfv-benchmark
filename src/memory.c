@@ -23,7 +23,7 @@ void *mem_alloc(size_t size) {
     memset(ret, 0, size);
     return ret;
 #else
-    return rte_zmalloc_socket(0, size, 0, 1);
+    return rte_zmalloc(0, size, 0);
 #endif
 }
 
@@ -35,7 +35,7 @@ void *mem_alloc_align(size_t align, size_t size) {
 
     memset(addr, 0, size);
 #else
-    addr = rte_zmalloc_socket(0, size, align, 1);
+    addr = rte_zmalloc(0, size, align);
 #endif
     return addr;
 }
