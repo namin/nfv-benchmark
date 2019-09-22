@@ -56,7 +56,7 @@ int datapath_init(int argc, char **argv, struct dataplane_port_t **port) {
 
     //const char port_name[] = "0000:06:00.3";
     // rte_eth_dev_count(): dpdk-18.02/lib/librte_ether/rte_ethdev.h
-    const char port_name[] = "0000:04:00.1";
+    const char port_name[] = "mlx4_6";
     log_info_fmt("Num available dpdk ports (i.e., number of usable ethernet devices): %d", rte_eth_dev_count());
 
     struct dataplane_port_t *pport = 0;
