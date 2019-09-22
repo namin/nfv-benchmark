@@ -23,7 +23,6 @@
 #endif
 
 /* Per element defaults */
-/*
 #ifndef ROUTING_BUFFER_SIZE
 #define ROUTING_BUFFER_SIZE 32
 #endif
@@ -35,7 +34,6 @@
 #ifndef IDENITTY_BUFFER_SIZE
 #define IDENTITY_BUFFER_SIZE 32
 #endif
-*/
 
 #ifndef DROP_BUFFER_SIZE
 #define DROP_BUFFER_SIZE 256
@@ -44,7 +42,6 @@
 #ifndef MOD_BUFFER_SIZE_DROP
 #define MOD_BUFFER_SIZE_DROP DROP_BUFFER_SIZE
 #endif
-
 
 #ifndef MOD_BUFFER_SIZE_1
 #define MOD_BUFFER_SIZE_1 32
