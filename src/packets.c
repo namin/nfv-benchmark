@@ -126,6 +126,6 @@ void packets_pool_zipfian(packet_pool_t *pool, uint32_t from,
 }
 
 void packets_pool_delete(packet_pool_t **pool) {
-    free(*pool);
+    mem_release(*pool);
     *pool = 0;
 }
