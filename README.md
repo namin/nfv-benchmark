@@ -14,6 +14,7 @@ Adopted to continue project on NFV
   * `make config T=x86_64-native-linuxapp-gcc`
   * `make`
   * in build, copy the drivers from lib to pmdlib, not all should be copied. see pmlib.txt for a list that works.
+    + E.g., using this command: cd dpdk-18.02/build; mkdir pmdlib; awk '{print $1"\n"$2}' ../../nfv-benchmark/pmdlib.txt | xargs -I {} cp lib/{} pmdlib
 - As root:
   * `sudo ./setup_hugepages.sh`
   * `cat /proc/meminfo | grep Huge` should show some Free pages, e.g.:
@@ -32,10 +33,18 @@ Hugepagesize:       2048 kB
 - Edit Makefile:
   * Pick whether you need MLX4 support
   * Pick PORT_NAME
+- Shared Libraries (DPDK):
+  * Add dpdk-18.02/build/lib to your LD_LIBRARY_PATH in case the librte_*.so* libraries can't be located by ld
+    + run `ldconfig dpdk-18.02/build/lib` if needed
 
 ## Next steps:
 - [x] Build and run anything
   - [x] Fix gcc warnings
-- [ ] Run benchmarks
+- [x] Run benchmarks
+- [ ] Analyze benchmarks
+  - [ ] Reproduce behaviour from paper
+    - [ ] changing workload effects optimizations significantly
+    - [ ] hand-written optimizations outperform naive (and compiler optimized) versions
 - [ ] Write custom benchmarks
+  - [ ] More types of optimizations
 - [ ] Initial language design
