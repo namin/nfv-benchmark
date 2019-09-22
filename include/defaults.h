@@ -58,6 +58,10 @@
 #define MOD_BUFFER_SIZE_3 32
 #endif
 
+#ifndef MOD_BUFFER_SIZE_4
+#define MOD_BUFFER_SIZE_4 32
+#endif
+
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 1024
 #endif
