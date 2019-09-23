@@ -32,7 +32,7 @@ void test_benchmark() {
 
     // Compile and load the checksum-drop module
     struct jit_t jit = {0};
-    jit_test_load(&jit, "checksum-routing");
+    jit_test_load(&jit, "mea_rfile-checksum");
 
     for (int i=0; i<=3; i++) {
     // Benchmark the running time of the jitted test
