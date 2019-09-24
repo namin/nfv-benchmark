@@ -12,6 +12,7 @@
 #include "log.h"
 #include "packets.h"
 #include "pipeline.h"
+#include "opt.h"
 
 #include "rte_cycles.h"
 #include "rte_prefetch.h"
@@ -22,8 +23,8 @@ void datapath_teardown(struct dataplane_port_t *port);
  * Normal vs. DDOS distribution packet size distribution
  */
 
-void test_benchmark();
-void test_benchmark() {
+void test_benchmark(char const*);
+void test_benchmark(char const *name) {
     uint32_t packet_count = 1<<10;
     struct packet_pool_t *pool = packets_pool_create(packet_count, PACKET_SIZE);
 
@@ -32,17 +33,17 @@ void test_benchmark() {
 
     // Compile and load the checksum-drop module
     struct jit_t jit = {0};
-    jit_test_load(&jit, "mea_rfile-checksum");
+    jit_test_load(&jit, name);
 
-    for (int i=0; i<=3; i++) {
-    // Benchmark the running time of the jitted test
-    // Put a memory barrier for benchmarks
-    uint32_t repeat = 40;
-    asm volatile ("mfence" ::: "memory");
-    uint64_t cycles = rte_get_tsc_cycles();
-    (*jit.entry.test)(pool, repeat, i);
-    asm volatile ("mfence" ::: "memory");
-    printf("num cycles per packet (%.2f)\n", (float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
+    for (int o=Naive; o<=Opt; o++) {
+      // Benchmark the running time of the jitted test
+      // Put a memory barrier for benchmarks
+      uint32_t repeat = 40;
+      asm volatile ("mfence" ::: "memory");
+      uint64_t cycles = rte_get_tsc_cycles();
+      (*jit.entry.test)(pool, repeat, o);
+      asm volatile ("mfence" ::: "memory");
+      printf("num cycles per packet (%.2f)\n", (float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
     }
 
     // Unload once done
@@ -85,7 +86,9 @@ int main(int argc, char **argv) {
     if (!port) 
         return 0;
 
-    test_benchmark();
+    test_benchmark("checksum-routing");
+    test_benchmark("mea_rfile-checksum");
+    // TODO: add others
 
     datapath_teardown(port);
     return 0;

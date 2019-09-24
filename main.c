@@ -12,6 +12,7 @@
 #include "log.h"
 #include "packets.h"
 #include "pipeline.h"
+#include "opt.h"
 
 #include "rte_cycles.h"
 #include "rte_prefetch.h"
@@ -39,7 +40,7 @@ void test_benchmark(char const *name) {
     uint32_t repeat = 20;
     asm volatile ("mfence" ::: "memory");
     uint64_t cycles = rte_get_tsc_cycles();
-    (*jit.entry.test)(pool, repeat);
+    (*jit.entry.test)(pool, repeat, Opt);
     asm volatile ("mfence" ::: "memory");
     printf("num cycles per packet (%.2f)\n", (float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
 

@@ -37,7 +37,7 @@ void naive_benchmark_config_init(struct benchmark_t *bench) {
 
     bench->pipeline = pipe = pipeline_create();
 
-    pipeline_element_add(pipe, el_naive_checksum_create(CHECKSUM_BUFFER_SIZE));
-    pipeline_element_add(pipe, el_naive_routing_create_with_file(ROUTING_BUFFER_SIZE, "data/boza_rtr_route.lpm"));
+    pipeline_element_add(pipe, el_naive_checksum_create(1));
+    pipeline_element_add(pipe, el_naive_routing_create_with_file(1, "data/boza_rtr_route.lpm"));
     pipeline_element_add(pipe, el_drop_create(DROP_BUFFER_SIZE));
 }
