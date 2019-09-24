@@ -65,7 +65,7 @@ void naive_measurement_process(struct element_t *ele, struct packet_t **pkts, __
 void naive_measurement_release(struct element_t *ele) {
     struct naive_measurement_t *self = (struct naive_measurement_t *)ele;
     if (self->tbl) {
-        printf("Printing measurement moduel stats\n");
+        printf("Printing measurement module stats\n");
         size_t size_minus_one = self->tbl_size - 1;
         size_t total_unique = 0;
         size_t total_count = 0;
