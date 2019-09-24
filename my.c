@@ -25,6 +25,7 @@ void datapath_teardown(struct dataplane_port_t *port);
 
 void test_benchmark(char const*);
 void test_benchmark(char const *name) {
+    printf("cycles for %s\n", name);
     uint32_t packet_count = 1<<10;
     struct packet_pool_t *pool = packets_pool_create(packet_count, PACKET_SIZE);
 
