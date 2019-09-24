@@ -86,10 +86,17 @@ int main(int argc, char **argv) {
     if (!port) 
         return 0;
 
+    test_benchmark("checksum-checksum");
+    test_benchmark("checksum-drop");
+    test_benchmark("checksum-rfile");
     test_benchmark("checksum-routing");
+    test_benchmark("mea_checksum-rfile");
     test_benchmark("mea_rfile-checksum");
-    // TODO: add others
-
+    test_benchmark("measurement-drop");
+    test_benchmark("rfile_checksum-mea");
+    test_benchmark("rfile-drop");
+    //test_benchmark("routing-drop");
+    
     datapath_teardown(port);
     return 0;
 }
