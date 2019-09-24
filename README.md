@@ -30,6 +30,8 @@ Hugepagesize:       2048 kB
   * `sudo umount -a -t hugetlbfs`
   * `sudo mount -t hugetlbfs nodev /mnt/huge`
   * can also do `sudo rm -rf /mnt/huge/*` to free once mounted
+- Configure NIC:
+  * on zu: sudo modprobe -a ib_uverbs mlx4_en mlx4_core mlx4_ib
 - Edit Makefile:
   * Pick whether you need MLX4 support
   * Pick PORT_NAME
