@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 struct packet_pool_t;
-typedef void (*benchmark_test_run_t)(struct packet_pool_t *, uint32_t);
+typedef void (*benchmark_test_run_t)(struct packet_pool_t *, uint32_t, int);
 
 enum jit_type {
     JIT_NONE = 0,
