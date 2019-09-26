@@ -6,6 +6,7 @@
 
 #include "rte_cycles.h"
 #include "rte_ethdev.h"
+#include "rte_ether.h"
 #include "rte_malloc.h"
 #include "rte_mempool.h"
 
@@ -79,9 +80,7 @@ int port_configure(char const *port_name, struct dataplane_port_t **ppport) {
     if (ret < 0)
         goto cleanup;
 
-    /* Gonna ignore the mac address in this iteration
-     * TODO: Prob need to handle it when doing some routing logic */
-    // rte_eth_macaddr_get;
+    rte_eth_macaddr_get(port_id, &port->port_mac);
 
     /* Setup port RX buffer */
     uint16_t pool_size = RTE_MAX(1U * (port->rx_desc + port->tx_desc + MAX_PKT_BURST +
@@ -198,10 +197,9 @@ void dataplane_print_epoch_stats(struct dataplane_port_t *port) {
 "| In : %15" PRIu64 " |  In bytes: %20" PRIu64" | Missed: %14" PRIu64 " | Rate: %15.2f | Error: %15" PRIu64 " |\n"
 "*---------------------------------------------------------------------------------------------------------*\n",
             port->port_id,
-            // port->port_mac.addr_bytes[0], port->port_mac.addr_bytes[1],
-            // port->port_mac.addr_bytes[2], port->port_mac.addr_bytes[3],
-            // port->port_mac.addr_bytes[4], port->port_mac.addr_bytes[5],
-			0, 0, 0, 0, 0, 0,
+            port->port_mac.addr_bytes[0], port->port_mac.addr_bytes[1],
+            port->port_mac.addr_bytes[2], port->port_mac.addr_bytes[3],
+            port->port_mac.addr_bytes[4], port->port_mac.addr_bytes[5],
             ps->opackets, ps->obytes, ps->oerrors, opktsdelta/cycles_to_seconds(delta),
             ps->ipackets, ps->ibytes, ps->imissed, ipktsdelta/cycles_to_seconds(delta), ps->ierrors);
 }

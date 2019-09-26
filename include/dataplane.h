@@ -7,6 +7,7 @@
 #include "packets.h"
 #include "rte_cycles.h"
 #include "rte_ethdev.h"
+#include "rte_ether.h"
 #include "rte_malloc.h"
 #include "log.h"
 
@@ -36,10 +37,13 @@ struct dataplane_port_t {
     struct rte_eth_conf *conf;  /* Ethernet config */
     struct rte_mempool  *pool;  /* DPDK pktmbuf pool */
 
+    struct ether_addr port_mac;
+
     struct rte_eth_stats port_stats_prev; /* Port statistics */
     struct rte_eth_stats port_stats_now;  /* Port statistics */
     uint64_t             port_stats_time; /* Time when the port stat snapshot was taken */
     uint64_t             port_stats_time_delta; /* Time when the port stat snapshot was taken */
+
 };
 
 int port_configure(char const *port_name, struct dataplane_port_t **port);
