@@ -12,6 +12,16 @@ void benchmark_config_init(struct benchmark_t *bench) {
     pipeline_element_add(pipe, el_drop_create(DROP_BUFFER_SIZE));
 }
 
+void batching_benchmark_config_init(struct benchmark_t *bench) {
+    struct pipeline_t *pipe = 0;
+
+    bench->pipeline = pipe = pipeline_create();
+
+    pipeline_element_add(pipe, el_batching_checksum_create(CHECKSUM_BUFFER_SIZE));
+    pipeline_element_add(pipe, el_batching_routing_create_with_file(ROUTING_BUFFER_SIZE, "data/boza_rtr_route.lpm"));
+    pipeline_element_add(pipe, el_drop_create(DROP_BUFFER_SIZE));
+}
+
 void bp_benchmark_config_init(struct benchmark_t *bench) {
     struct pipeline_t *pipe = 0;
 
