@@ -147,7 +147,6 @@ int pipeline_adaptive(int m, int n, char const *name)
       k = sample_fun(sk_per_arg, st_per_arg);
     }
 
-    FILE *fp = freopen("logs/jit_out.txt","a",stdout);
     struct packet_pool_t* pool = pools[arg];
     uint32_t repeat = 40;
     asm volatile ("mfence" ::: "memory");
@@ -155,8 +154,6 @@ int pipeline_adaptive(int m, int n, char const *name)
     (*jit.entry.test)(pool, repeat, k);
     asm volatile ("mfence" ::: "memory");
     int r = (int)(100*(float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
-    fclose(fp);
-    freopen ("/dev/tty", "a", stdout);
    
     sk[k] += 1;
     st[k] += r;
