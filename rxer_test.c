@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <arpa/inet.h>
 #include "rte_ethdev.h"
+#include "rte_ether.h"
 #include "rte_malloc.h"
 
 #include "benchmark_rxer.h"
@@ -37,6 +39,81 @@ void release_resources(void);
 struct fll_t *g_fll = 0;
 struct rx_packet_stream *g_stream = 0;
 struct pipeline_t *g_pipe = 0;
+
+// rt_* code is ported from
+// https://github.com/netronome-support/Tools/blob/master/dpdk/route/icmp.c
+// and related files
+typedef struct {
+    uint8_t     type;
+    uint8_t     code;
+    uint16_t    chksum;
+    uint16_t    ident;
+    uint16_t    seq;
+} __attribute__((packed)) rt_icmp_hdr_t;
+
+typedef struct {
+    uint8_t dst[6];
+    uint8_t src[6];
+    uint16_t ethtype;
+} __attribute__((packed)) rt_eth_hdr_t;
+
+#define PTR(ptr, type, offset)			\
+  ((type *) &(((char *) (ptr))[offset]))
+
+uint16_t
+rt_pkt_chksum (const void *buf, int len, uint32_t cs) {
+    int i;
+    const uint8_t *msg = buf;
+    for (i = 0 ; i < len ; i++)
+        cs += (1 & i) ? msg[i] : (msg[i] << 8);
+    while ((cs >> 16) != 0)
+        cs = (cs & 0xFFFF) + (cs >> 16);
+    return cs;
+}
+
+static inline void
+rt_icmp_set_chksum (void *p, int len)
+{
+    rt_icmp_hdr_t *icmp = (rt_icmp_hdr_t *) p;
+    icmp->chksum = 0;
+    uint16_t chksum = ~ rt_pkt_chksum(icmp, len, 0);
+    icmp->chksum = htons(chksum);
+}
+
+static inline int
+rt_icmp_request (struct rte_mbuf *m)
+{
+    rt_eth_hdr_t* eth = rte_pktmbuf_mtod(m, void *);
+    void* l3 = &((uint8_t *) eth)[14];
+    void* icmp = PTR(l3, void, 20);
+    uint8_t type = *PTR(icmp, uint8_t, 0);
+    if (type != 8 && type != 80) {
+      if (type != 0) {
+	log_info_fmt("not repling to type %d\n", type);
+      }
+      return 0;
+    }
+
+    /* Set ICMP type to ECHO REPLY */
+    *PTR(icmp, uint8_t, 0) = 0;
+
+    /* Check on packet length */
+    int buflen = rte_pktmbuf_pkt_len(m);
+    uint16_t iplen = ntohs(*PTR(l3, uint16_t, 2));
+    uint16_t icmplen = iplen - 20;
+    assert(buflen >= (iplen + 14));
+
+    /* Update ICMP checksum */
+    rt_icmp_set_chksum(icmp, icmplen);
+
+    /* Reverse IP addresses */
+    uint32_t ripa = *PTR(l3, uint32_t, 12);
+    uint32_t lipa = *PTR(l3, uint32_t, 16);
+    *PTR(l3, uint32_t, 12) = lipa;
+    *PTR(l3, uint32_t, 16) = ripa;
+
+    return 1;
+}
 
 void release_resources(void) {
     if (g_pipe) {
@@ -111,8 +188,14 @@ void benchmark_loop(struct dataplane_port_t *port,
         // Send the ack packet back
         fll_pkt_ack(fll, fll_buffer, npkts);
         packet_send(port, fll_pkt);
-        rte_eth_tx_buffer_flush(port->port_id, port->queue_id, port->tx_buffer);
-
+	// Send real acks!
+	for (int i=0; i<npkts; i++) {
+	  int do_send = rt_icmp_request(rx_mbufs[i]);
+	  if (do_send) {
+	    rte_eth_tx_buffer(port->port_id, port->queue_id, port->tx_buffer, rx_mbufs[i]);
+	  }
+	}
+	rte_eth_tx_buffer_flush(port->port_id, port->queue_id, port->tx_buffer);
         if (unlikely(record_time == 1 && packet_count > num_packets))
             break;
     }
