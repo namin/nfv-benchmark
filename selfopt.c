@@ -74,9 +74,9 @@ int sample_fun(int* sk, int* st)
 
 int print_summary_per()
 {
-  printf("\nSUMMARY\n");
+  printf("\nselfopt: SUMMARY\n");
   for (int arg=0; arg<I; arg++) {
-    printf("arg=%2d ", arg);
+    printf("selfopt: arg=%d ", arg);
     double sr[] = FA;
     double total = over(sr, sk_per[arg], st_per[arg]);
     if (total > 0.0) {
@@ -122,7 +122,7 @@ void packets_pool_uniform(struct packet_pool_t *pool)
 
 int pipeline_adaptive(int m, int n, char const *name)
 {
-  //printf("selfopt for %s\n", name);
+  printf("selfopt: for %s\n", name);
   uint32_t packet_count = 1<<10;
   struct packet_pool_t *pool_random = packets_pool_create(packet_count, PACKET_SIZE);
   struct packet_pool_t *pool_zipf = packets_pool_create(packet_count, PACKET_SIZE);
