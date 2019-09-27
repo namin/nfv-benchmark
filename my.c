@@ -29,13 +29,32 @@ void test_benchmark(char const *name) {
     uint32_t packet_count = 1<<10;
     struct packet_pool_t *pool = packets_pool_create(packet_count, PACKET_SIZE);
 
-    // Create a zipfian distribution for source/destination ip address
-    packets_pool_zipfian(pool, 0, packet_count - 1, 26, 8, 0.5);
-
     // Compile and load the checksum-drop module
     struct jit_t jit = {0};
     jit_test_load(&jit, name);
 
+    for (int j=0; j<2; j++) {
+    for (int d=0; d<=2; d++) {
+      if (d==0 && j==1) {
+	continue;
+      }
+      if (d==1) {
+	if (d==1) printf("cycles ZIPF\n");
+	// Create a zipfian distribution for source/destination ip address
+	packets_pool_zipfian(pool, 0, packet_count - 1, 26, 8, 0.5);
+      }
+      if (d==2) {
+	printf("cycles UNIFORM DIST\n");
+	packet_t *pkt_first = NULL;
+	for (packet_t *pkt = packets_pool_first(pool); 
+	     pkt < pool->end; pkt = (packet_t*)(pkt->data + pool->size)) {
+	  if (pkt_first == NULL) {
+	    pkt_first = pkt;
+	  } else {
+	    memcpy(pkt->data, pkt_first->data, pkt->size);
+	  }
+	}
+      }
     for (int o=Naive; o<=Opt; o++) {
       // Benchmark the running time of the jitted test
       // Put a memory barrier for benchmarks
@@ -46,7 +65,8 @@ void test_benchmark(char const *name) {
       asm volatile ("mfence" ::: "memory");
       printf("num cycles per packet (%.2f)\n", (float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
     }
-
+    }
+    }
     // Unload once done
     jit_test_unload(&jit);
     packets_pool_delete(&pool);
