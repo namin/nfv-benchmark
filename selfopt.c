@@ -171,7 +171,9 @@ int pipeline_adaptive(int m, int n, char const *name)
   packets_pool_delete(&pool_random);
   packets_pool_delete(&pool_zipf);
   packets_pool_delete(&pool_uniform);
-      
+
+  print_summary_and_cleanup();
+
   return 0;
 }
 
@@ -209,25 +211,16 @@ int main(int argc, char **argv)
     return 0;
 
   int m = 1000;
-  int n = 3000;
+  int n = 6000;
   pipeline_adaptive(m, n, "checksum-checksum");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "checksum-drop");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "checksum-rfile");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "checksum-routing");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "mea_checksum-rfile");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "mea_rfile-checksum");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "measurement-drop");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "rfile_checksum-mea");
-  print_summary_and_cleanup();
   pipeline_adaptive(m, n, "rfile-drop");
-  print_summary_and_cleanup();
 
   datapath_teardown(port);
   return 0;
