@@ -92,6 +92,21 @@ int print_summary_per()
   return 0;
 }
 
+int print_summary_and_cleanup()
+{
+  print_summary_per();
+  for (int fun=0; fun<F; fun++) {
+    sk[fun] = 0;
+    st[fun] = 0;
+  }
+  for (int arg=0; arg<I; arg++) {
+    for (int fun=0; fun<F; fun++) {
+      sk_per[arg][fun] = 0;
+    }
+  }
+  return 0;
+}
+  
 void packets_pool_uniform(struct packet_pool_t *pool)
 {
   packet_t *pkt_first = NULL;
@@ -107,6 +122,7 @@ void packets_pool_uniform(struct packet_pool_t *pool)
 
 int pipeline_adaptive(int m, int n, char const *name)
 {
+  //printf("selfopt for %s\n", name);
   uint32_t packet_count = 1<<10;
   struct packet_pool_t *pool_random = packets_pool_create(packet_count, PACKET_SIZE);
   struct packet_pool_t *pool_zipf = packets_pool_create(packet_count, PACKET_SIZE);
@@ -131,6 +147,7 @@ int pipeline_adaptive(int m, int n, char const *name)
       k = sample_fun(sk_per_arg, st_per_arg);
     }
 
+    FILE *fp = freopen("logs/jit_out.txt","a",stdout);
     struct packet_pool_t* pool = pools[arg];
     uint32_t repeat = 40;
     asm volatile ("mfence" ::: "memory");
@@ -138,15 +155,19 @@ int pipeline_adaptive(int m, int n, char const *name)
     (*jit.entry.test)(pool, repeat, k);
     asm volatile ("mfence" ::: "memory");
     int r = (int)(100*(float)(rte_get_tsc_cycles() - cycles)/(float)(packet_count * repeat));
-      
+    fclose(fp);
+    freopen ("/dev/tty", "a", stdout);
+   
     sk[k] += 1;
     st[k] += r;
     sk_per_arg[k] += 1;
     st_per_arg[k] += r;
+    /*
     if (i % 100 == 1) {
       printf("%d ", i);
       print_summary_per();
     }
+    */
   }
 
   jit_test_unload(&jit);
@@ -190,8 +211,26 @@ int main(int argc, char **argv)
   if (!port) 
     return 0;
 
-  pipeline_adaptive(1000, 10000, "measurement-drop");
-  print_summary_per();
+  int m = 1000;
+  int n = 3000;
+  pipeline_adaptive(m, n, "checksum-checksum");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "checksum-drop");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "checksum-rfile");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "checksum-routing");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "mea_checksum-rfile");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "mea_rfile-checksum");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "measurement-drop");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "rfile_checksum-mea");
+  print_summary_and_cleanup();
+  pipeline_adaptive(m, n, "rfile-drop");
+  print_summary_and_cleanup();
 
   datapath_teardown(port);
   return 0;
