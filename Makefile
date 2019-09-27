@@ -72,6 +72,9 @@ MAIN_SRC += main.c
 MY_SRC = $(SRC)
 MY_SRC += my.c
 
+SELFOPT_SRC = $(SRC)
+SELFOPT_SRC += selfopt.c
+
 ifeq ($(MAKECMDGOALS), jit-test)
 	JIT_SRC += tests/$(BENCHMARK)/benchmark.c
 endif
@@ -80,6 +83,7 @@ endif
 # Object file rules
 MAIN_OBJ = $(MAIN_SRC:%.c=$(BUILD_DIR)/%.o)
 MY_OBJ = $(MY_SRC:%.c=$(BUILD_DIR)/%.o)
+SELFOPT_OBJ = $(SELFOPT_SRC:%.c=$(BUILD_DIR)/%.o)
 JIT_OBJ  = $(JIT_SRC:%.c=$(BUILD_DIR)/%.o)
 TXER_OBJ = $(TXER_SRC:%.c=$(BUILD_DIR)/%.o)
 RXER_OBJ = $(RXER_SRC:%.c=$(BUILD_DIR)/%.o)
@@ -142,6 +146,11 @@ jit-test: $(JIT_OBJ)
 
 .PHONY: my
 my: $(MY_OBJ)
+	@mkdir -p $(BIN_DIR)
+	@$(CC) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) -ldl
+
+.PHONY: selfopt
+selfopt: $(SELFOPT_OBJ)
 	@mkdir -p $(BIN_DIR)
 	@$(CC) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) $(CFLAGS) $(EXTRA) -ldl
 
