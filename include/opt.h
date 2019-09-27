@@ -1,1 +1,1 @@
-enum OPT {Naive=0,Bp,Bpp,Opt};
+enum OPT {Naive=0,Batching,Bp,Bpp,Opt};

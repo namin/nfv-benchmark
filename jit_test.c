@@ -16,7 +16,9 @@ void jit_test(struct packet_pool_t *pool, uint32_t repeat, int i) {
     if (i==Naive) {
       batch_req_size = 1;
       naive_benchmark_config_init(&bench);
-    }  else if (i==Bp)
+    } else if (i==Batching)
+      batching_benchmark_config_init(&bench);
+    else if (i==Bp)
       bp_benchmark_config_init(&bench);
     else if (i==Bpp)
       bpp_benchmark_config_init(&bench);
